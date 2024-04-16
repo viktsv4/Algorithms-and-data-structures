@@ -1,0 +1,52 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+void dfs(int k,vector<vector<int>> &gr,vector<int> &done){
+    done[k]=1;
+    for(int i=0;i<gr[k].size();i++){
+        if (done[gr[k][i]]==0){
+            dfs(gr[k][i],gr,done);
+        }
+    }
+}
+int main() {
+    int n,m;
+    cin >> n>> m;
+    vector<vector<int>> gr(n);
+    vector <int> done(n);
+    for (int i=0;i<done.size();i++){
+        done[i]=-1;
+    }
+    for (int i=0;i<m;i++){
+        int first,second;
+        cin>>first>>second;
+        int b=0,c=0;
+        for (int j=0;j<gr[first-1].size();j++){
+            if (gr[first-1][j]==second-1) b+=1;
+        }
+        if (b==0) {
+            done[first-1]=0;
+            gr[first-1].push_back(second-1);
+        }
+        for (int j=0;j<gr[second-1].size();j++){
+            if (gr[second-1][j]==first-1) c++;
+        }
+        if (c==0) {
+            gr[second-1].push_back(first-1);
+            done[second-1]=0;
+        }
+    }
+    int svaz=0;
+    for (int i=0;i<done.size();i++){
+        if (done[i]==0){
+            dfs(i,gr,done);
+            svaz+=1;
+        }
+    }
+    for (int i=0;i<done.size();i++){
+        if (done[i]==-1)svaz++;
+    }
+    cout<<svaz;
+    return 0;
+}
