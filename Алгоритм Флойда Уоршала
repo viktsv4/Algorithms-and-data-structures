@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+#include <cmath>
+using namespace std;
+
+int main() {
+    int n, m;
+    cin >> n >> m ;
+    vector<vector<unsigned long long>> matrix(n, vector<unsigned long long>(n, LLONG_MAX));
+    for (int i = 0; i < m; i++) {
+        int first, second;
+        unsigned long long weight;
+        cin >> first >> second >> weight;
+        matrix[first - 1][second - 1] =min( weight, matrix[first - 1][second - 1] );
+        matrix[second - 1][first - 1] = min(weight, matrix[second - 1][first - 1]);
+    }
+    for (int i = 0; i < n; i++){
+         matrix[i][i]=0;
+    }
+    for (int k = 0; k <n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j]>matrix[i][k] + matrix[k][j] && matrix[i][k]!=LLONG_MAX &&matrix[k][j]!=LLONG_MAX)
+                    matrix[i][j] = matrix[i][k] + matrix[k][j];
+            }
+        }
+    }
+    vector<int>min_m(n);
+    for (int i = 0; i < n; i++) {
+        long long sum=0;
+        for (int j = 0; j < n; j++) {
+           sum+=matrix[i][j];
+        }
+        min_m[i]=sum;
+    }
+    unsigned long long mn=LLONG_MAX,m_ind;
+    for(int i=0;i<n;i++){
+        if (min_m[i]<mn){
+            mn=min_m[i];
+            m_ind=i+1;
+        }
+    }
+    cout<<m_ind;
+    return 0;
+}
