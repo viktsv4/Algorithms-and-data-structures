@@ -1,0 +1,31 @@
+#include <iostream>
+using namespace std;
+bool check(int rast,int boyarin,int chair,int coord[]){
+     int fboyarin=coord[0];
+     int boyarinsidit=1;
+     for(int i=1;i<chair;i++){
+     if (rast<=(coord[i])-fboyarin){
+         boyarinsidit+=1;
+         fboyarin=coord[i];
+     }
+     if (boyarinsidit==boyarin) return 1;
+     }
+     return 0;
+}
+int main(){
+    int boyarin,chair,otvet=0;
+    cin>>chair>>boyarin;
+    int coord[chair];
+    for(int i=0;i<chair;i++)cin>>coord[i];
+    int minr=1;
+    int maxr=coord[chair-1]-coord[0];
+    while(minr<=maxr){
+        int mid=(minr+maxr)/2;
+        if ((check(mid,boyarin,chair,coord))==1) {
+            otvet=mid;
+            minr=mid+1;
+        }
+        else maxr=mid-1;
+    }
+    cout<<otvet<<endl;
+}
