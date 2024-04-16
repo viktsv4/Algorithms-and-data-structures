@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <bits/stdc++.h>
+using namespace std;
+
+void dfs(int k,vector<vector<int>> &gr,vector<int> &done,vector<int>&top_sort){
+    done[k]=1;
+    for(int i=0;i<gr[k].size();i++){
+        if (done[gr[k][i]]==0){
+            dfs(gr[k][i],gr,done,top_sort);
+        }
+    }
+    top_sort.push_back(k);
+}
+void dfs2(int k,vector<vector<int>> &gr,vector<int> &done,vector<int>&min_house){
+    min_house.push_back(k);
+    done[k]=1;
+    for(int i=0;i<gr[k].size();i++){
+        if (done[gr[k][i]]==0){
+            dfs2(gr[k][i],gr,done,min_house);
+        }
+    }
+}
+int main() {
+    int n,m;
+    cin >> n>> m;
+    vector<vector<int>> gr(n);
+    vector<vector<int>> gr_start(n);
+    vector <int> done(n,0);
+    vector<int>top_sort;
+    vector<int>components;
+    for (int i=0;i<m;i++){
+        int first,second;
+        cin>>first>>second;
+        gr[second-1].push_back(first-1);
+        gr_start[first-1].push_back(second-1);
+    }
+    for(int i=0;i<n;i++) {
+        if(done[i]==0) dfs(i, gr, done,top_sort);
+    }
+    reverse(top_sort.begin(), top_sort.end());
+    fill(done.begin(), done.end(), 0);
+    int family=0;
+    vector <int> done1(n,0);
+    for(int i=0;i<n;i++) {
+        if (done[top_sort[i]]==0){
+            vector<int>min_house;
+            family++;
+            dfs2(top_sort[i],gr_start,done,min_house);
+            sort(min_house.begin(),min_house.end());
+            components.push_back(min_house[0]);
+            for(int i=0;i<min_house.size();i++) done1[min_house[i]]=min_house[0];
+
+        }
+    }
+    cout<<family<<" ";
+
+    vector<set<int>>res(n);
+    int ribs=0;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<gr_start[i].size();j++){
+            if (done1[i]!=done1[gr_start[i][j]]) {
+                res[done1[i]].insert(done1[gr_start[i][j]]);
+
+
+            }}
+    }
+
+
+    for(int i=0;i<res.size();i++){
+        for(int j=0;j<res[i].size();j++){
+            ribs++;
+        }
+    }
+    cout<<ribs<<endl;
+    for(int i=0;i<res.size();i++){
+        for(auto j:res[i]){
+            cout<<i+1<<" "<<j+1<<endl;
+        }
+    }
+    return 0;
+}
