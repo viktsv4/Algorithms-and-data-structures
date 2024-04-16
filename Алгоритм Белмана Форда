@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int main() {
+    int n,m,start,end;
+    cin >> n>> m;
+    set<int>vec;
+    vector<vector<pair<int,int>>> gr(n);
+    vector<int >distanse(n,2e9);
+    for (int i=0;i<m;i++){
+        int first,second,weight;
+        cin>>first>>second>>weight;
+        vec.insert(second);
+        vec.insert(first);
+        gr[first-1].push_back({second-1,weight});
+
+    }
+    vector<int> v(vec.begin(), vec.end());
+    sort(v.begin(), v.end());
+    start=0;
+    end=v[v.size()-1]-1;
+    distanse[start]=0;
+     for (int j = 0; j < n; j++) {
+            for (int k = 0; k < gr[j].size(); k++) {
+                distanse[gr[j][k].first] = min(distanse[gr[j][k].first], distanse[j] + gr[j][k].second);
+            }
+    }
+    if (distanse[end]==2e9)cout<<"-1";
+    else cout<<distanse[end];
+    return 0;
+}
