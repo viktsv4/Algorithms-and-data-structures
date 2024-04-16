@@ -1,0 +1,60 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+struct edge{
+    int first,second,weight;
+};
+int main() {
+    int N, res;
+    cin >> N >> res;
+
+    for (int e = 0; e < N; e++) {
+        int n, m;
+        cin >> n >> m;
+        vector<edge> edges(m);
+        vector<int> from(n, -1);
+        vector<int> distance(n);
+        for (auto&[first,second,weight]:edges) {
+            cin >> first >> second >> weight;
+            first--;
+            second--;
+        }
+        
+        int start;
+        for(int g=0;g<n;g++){
+            fill(distance.begin(),distance.end(),1000000);
+            distance[g]=0;
+        
+        for (int j = 0; j < n; j++) {
+            start = -1;
+            for (auto&[first,second,weight]:edges){
+                if (distance[second] > distance[first] + weight && distance[first]!=1000000) {
+                    from[second] = first;
+                    distance[second] =distance[first] + weight;
+                    start=second;
+                }
+            }}
+        if (start!=-1)break;
+        }
+
+        int flag = 0;
+        if (start!=-1) flag=1;
+        if (flag==1){
+            for(int i=0;i<n;i++){
+                start=from[start];
+            }}
+        vector<int> cyc;
+        int len =0;
+        if (flag==1){
+            for(int z=start;;z=from[z]){
+                cyc.push_back(z);
+                len++;
+                if(z==start && cyc.size()>1)break;
+            }
+        }
+        if (!flag || (flag && cyc.size()<=res)) cout << "YES" << endl;
+        else cout << "NO" << endl;
+    }
+    return 0;
+}
