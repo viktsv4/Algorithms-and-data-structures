@@ -1,0 +1,28 @@
+#include <iostream>
+
+using namespace std;
+void qsort(int mas[],int l,int r) {
+        int i=l;
+        int j=r;
+        int mid=(mas[l]+mas[r])/2;
+        
+        while(i<=j)
+        {   while (mas[i]<mid) i++;
+            while (mas[j]>mid) j--;
+            if (i<=j)swap(mas[i++],mas[j--]);
+        }
+        if (l<j) qsort(mas,l,j);
+        if (r>i) qsort(mas,i,r);
+
+    }
+    int main(){
+    int n;
+    cin>>n;
+    int mas[n];
+    for (int i=0;i<n;i++)
+        cin>>mas[i];
+    qsort(mas,0,n-1);
+    for (int i=0;i<n;i++)
+        cout<<mas[i]<<" ";
+    return 0;
+}
