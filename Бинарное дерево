@@ -1,0 +1,131 @@
+#include <iostream>
+
+using namespace std;
+
+
+struct Node{
+    long long data;
+    struct Node *left;
+    struct Node *right;
+
+};
+
+struct Node* newNode(long long data)
+{
+    struct Node* elem= new struct Node;
+    elem->data = data;
+    elem->left = elem->right = nullptr;
+    return elem;
+}
+Node* findelem(Node *root){
+    while (root->left!= nullptr) root=root->left;
+    return root;
+}
+Node* del(int data, Node* root) {
+    if (root== nullptr)return root;
+    if (data>root->data) root->right= del(data,root->right);
+    else if (data<root->data) root->left= del(data,root->left);
+    else {
+        if (root->right == nullptr) {
+            Node *successor = root->left;
+            delete root;
+            return successor;
+        } else if (root->left == nullptr) {
+            Node *successor = root->right;
+            delete root;
+            return successor;
+        }
+        Node *successor = findelem(root->right);
+        root->data = successor->data;
+        root->right = del(successor->data, root->right);
+    }
+    return root;
+}
+Node *insert( long long data,Node *root) {
+
+    if (root == nullptr) {
+        return newNode(data);
+    } else {
+        if (root->data > data) {
+            root->left = insert(data, root->left);
+        } else if(root->data < data){
+            root->right = insert(data, root->right);
+        }
+        return root;
+    }
+}
+Node* search(long long data, Node *root) {
+    if (root == nullptr || root->data == data) return root;
+    if (root->data > data)
+        return search(data, root->left);
+    else
+        return search(data, root->right);
+}
+Node* next(long long data, Node* root) {
+    Node* successor = nullptr;
+    Node* current=root;
+    while (current!= nullptr) {
+        if (current->data > data) {
+            successor=current;
+            current=current->left;
+        }
+        else {
+            current =current->right;
+        }
+    }
+    return successor;
+}
+Node* prev(long long data, Node* root) {
+    Node* successor= nullptr;
+    Node* current=root;
+    while (current!= nullptr) {
+        if (current->data>=data) current=current->left;
+        else {
+            successor=current;
+            current=current->right;
+        }
+    }
+    return successor;
+}
+int main(){
+    Node* root= nullptr;
+    string command;
+    long long  age;
+    bool flag=true;
+    while(cin>>command){
+
+        if (command=="insert"){
+            cin>>age;
+            root= insert(age,root);
+        }
+        if (command=="exists") {
+            cin >> age;
+            if (search(age,root) == nullptr)
+                cout <<"false" << endl;
+            else
+                cout <<"true" << endl;
+        }
+        if (command=="next"){
+            cin>>age;
+
+            if (next(age,root) == nullptr)
+                cout <<"none" << endl;
+            else
+                cout <<next(age,root)->data<< endl;
+        }
+        if (command=="prev"){
+            cin>>age;
+
+            if (prev(age,root) == nullptr)
+                cout <<"none" << endl;
+            else
+                cout <<prev(age,root)->data<< endl;
+        }
+        if (command=="delete") {
+            cin >> age;
+            root=del(age, root);
+        }
+    }
+
+    return 0;
+}
