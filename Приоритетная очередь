@@ -1,0 +1,93 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+
+void siftUp(vector<long long>& vec, long long n) {
+    while (vec[n] < vec[(n - 1) / 2]) {
+        swap(vec[n], vec[(n - 1) / 2]);
+         n = (n - 1) / 2;
+    }
+}
+void siftDown(vector<long long>& vec, long long n) {
+    while (2 *n + 1 < vec.size()) {
+        long long l = 2 * n + 1;
+        long long r = 2 * n + 2;
+        long long mx = l;
+        if (r < vec.size() && vec[r] < vec[l]) mx = r;
+        if (vec[n] <= vec[mx]) break;
+        swap(vec[n], vec[mx]);
+        n = mx;
+    }
+}
+void create(vector<vector<long long>> &vec){
+    vector<long long> vecNew;
+    vec.push_back(vecNew);
+}
+void decrease(vector<vector<long long>> &vec,int k,int m,int x){
+    for (long long j=0;j<vec[k].size();j++){
+        if (vec[k][j]==m) {
+            vec[k][j] = x;
+            siftUp(vec[k], j);
+            siftDown(vec[k], j);
+            break;
+        }
+    }
+}
+void merge(vector<vector<long long>> &vec,int k,int m){
+    vector<long long> vecNew;
+    vecNew = vec[k];
+    for (long long i: vec[m]){
+        vecNew.push_back(i);
+        siftUp(vecNew, (vecNew.size()-1));
+    }
+    vec.push_back(vecNew);
+}
+int extract(vector<vector<long long>> &vec,int k){
+    int min=vec[k][0];
+    vec[k][0]=vec[k][vec[k].size()-1];
+    vec[k].pop_back();
+    siftDown(vec[k],0);
+    return min;
+}
+void insert(vector<vector<long long>> &vec,int k,int m){
+    vec[k].push_back(m);
+    siftUp(vec[k], (vec[k].size()-1));
+
+}
+
+
+int main() {
+    string command;
+    long  long k, m, x;
+    vector<vector<long long>> vec;
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(0);
+    while (cin >> command) {
+        if (command == "create") {
+            create(vec);
+        }
+        else if (command == "insert") {
+            cin >> k >> m;
+            insert(vec,k,m);
+        }
+        else if (command == "extract-min") {
+            cin >> k;
+            if (vec[k].size()==0) cout<<"*"<<"\n";
+            else cout<<extract(vec,k)<<"\n";
+
+        }
+         else if (command == "merge") {
+            cin >> k >> m;
+            merge(vec,k,m);
+
+        }
+        else if (command == "decrease-key") {
+            cin >> k >> m >> x;
+            decrease(vec,k,m,x);
+        }}
+    return 0;
+}
