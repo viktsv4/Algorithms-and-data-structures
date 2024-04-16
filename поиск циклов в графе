@@ -1,0 +1,46 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+bool dfs(int k, vector<vector<int>> &gr, vector<int> &done, int last_str) {
+    done[k]++;
+    if (done[k] > 1) return true;
+    for (int i = 0; i < gr[k].size(); i++) {
+        if (done[gr[k][i]] <2 &&gr[k][i] != last_str ) {
+            if (dfs(gr[k][i], gr, done, k)) return true;
+        }
+    }
+    return false;}
+
+    int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<vector<int>> gr(n);
+    vector<int> done(n, 0);
+    for (int i = 0; i < m; i++) {
+        int first, second;
+        cin >> first >> second;
+        int b = 0, c = 0;
+        for (int j = 0; j < gr[first - 1].size(); j++) {
+            if (gr[first - 1][j] == second - 1) b += 1;
+        }
+        if (b == 0) {
+            gr[first - 1].push_back(second - 1);
+        }
+        for (int j = 0; j < gr[second - 1].size(); j++) {
+            if (gr[second - 1][j] == first - 1) c++;
+        }
+        if (c == 0) {
+            gr[second - 1].push_back(first - 1);
+        }
+    }
+    int flag = 0;
+    for (int i = 0; i < done.size(); i++) {
+        if (done[i] == 0) {
+            if (dfs(i, gr, done, -1)) flag = 1;
+        }
+    }
+    if (flag == 1) cout << "YES";
+    else cout << "NO";
+    return 0;
+}
