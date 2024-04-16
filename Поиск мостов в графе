@@ -1,0 +1,48 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+void dfs(int v, int p, int &high, vector<int> &enter, vector<int> &ret, vector<vector<int>> &gr, vector<pair<int, int>> &br,vector<int> &done) {
+    done[v]+=1;
+    high++;
+    enter[v] =high;
+    ret[v] =high;
+    for (int i=0;i<gr[v].size();i++) {
+        int now=gr[v][i];
+        if (now==p ) continue;
+        if (done[now]==1)  ret[v] = min(ret[v], enter[now]);
+        else {
+            dfs(now, v, high, enter, ret, gr, br,done);
+            ret[v] = min(ret[v], ret[now]);
+            if (ret[now] > enter[v])  br.push_back({min(v,now), max(v,now)});
+        }
+    }
+}
+
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+    vector<int> enter(n, 0);
+    vector<int> ret(n, 0);
+    vector<vector<int>> gr(n);
+    vector<int> done(n, 0);
+    vector<pair<int, int>> br;
+    int high=0;
+    for (int i = 0; i < m; i++) {
+        int first, second;
+        cin >> first >> second;
+        gr[first - 1].push_back(second - 1);
+        gr[second - 1].push_back(first - 1);
+    }
+    for (int i=0; i<n; ++i)
+        if (done[i]==0) dfs(i, -1, high, enter, ret, gr, br,done);
+
+
+    sort (br.begin(),br.end());
+    for (auto ans : br) {
+        cout <<ans.first+1<< " " <<ans.second+1<< endl;
+    }
+    return 0;
+}
