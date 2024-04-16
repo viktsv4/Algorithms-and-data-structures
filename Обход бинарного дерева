@@ -1,0 +1,22 @@
+#include <iostream>
+
+using namespace std;
+void tree(int mas[],int left,int right){
+    if(left<=right) {
+        int mid = left+(right - left)/2;
+        cout << mas[mid] << " ";
+        tree(mas, left, mid - 1);
+        tree(mas, mid + 1, right);
+    }
+}
+
+int main(){
+    long long n;
+    cin>>n;
+    int mas[n];
+    for(int i=0;i<n;i++)cin>>mas[i];
+    int left=0;
+    int right=n-1;
+    tree(mas,left,right);
+    return 0;
+}
