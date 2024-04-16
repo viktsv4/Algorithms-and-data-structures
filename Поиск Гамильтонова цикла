@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n,m;
+    cin>>n>>m;
+
+    vector<vector<bool>> gr(n, vector<bool>(m, 0));
+    vector<int>gam_cycle;
+    for(int i=0;i<m;i++){
+        int a,b,fl1=0,fl2=0;
+        cin>>a>>b;
+        gr[a][b]=1;
+        gr[b][a]=1;
+        for(int i=0;i<gam_cycle.size();i++){
+            if(gam_cycle[i]==a)fl1=1;
+            if(gam_cycle[i]==b)fl2=1;
+        }
+        if (fl1==0)gam_cycle.push_back(a);
+        if (fl2==0)gam_cycle.push_back(b);
+    }
+
+    for(int q=0;q<n*(n-1);q++){
+        int flag=0;
+        if (gr[gam_cycle[0]][gam_cycle[1]]==1){
+                int p=gam_cycle[0];
+                gam_cycle.erase(gam_cycle.cbegin());
+                gam_cycle.push_back(p);
+                flag=1;
+            }
+        else{
+            for(int e=2;e<gam_cycle.size();e++){if (flag==1)break;
+                for(int j=0;j<gr[gam_cycle[0]].size();j++){if (flag==1)break;
+                    for(int i=0;i<gr[gam_cycle[1]].size();i++){
+                        if (gr[gam_cycle[0]][j]==gam_cycle[e]&& gr[gam_cycle[1]][i]==gam_cycle[e+1]){
+                            reverse(gam_cycle.begin() + 1, gam_cycle.begin() + e+1);
+                            flag=1;
+                            if (flag==1)break;
+                        }
+                    }}
+            }
+
+        }
+    }
+
+    for(int i=0;i<gam_cycle.size();i++)cout<<gam_cycle[i]<<" ";
+    return 0;
+}
