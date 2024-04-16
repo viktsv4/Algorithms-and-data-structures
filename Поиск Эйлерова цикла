@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+
+void dfs(int k,vector<vector<int>> &gr,vector<int> &done){
+    done[k]=1;
+    for(int i=0;i<gr[k].size();i++){
+        if (done[gr[k][i]]==0){
+            dfs(gr[k][i],gr,done);
+        }
+    }
+}
+void find_ecyc(int start, vector<vector<int>>& gr, vector<int>& answ) {
+    while(!gr[start].empty())
+    {int m=gr[start][0];
+        auto iter = find(gr[start].begin(), gr[start].end(),  m);
+        auto iter1 = find(gr[m].begin(), gr[m].end(), start);
+         gr[start].erase(iter);
+         gr[m].erase(iter1);
+        find_ecyc(m, gr, answ);
+    }
+    answ.push_back(start + 1);
+}
+int main() {
+    int n,m;
+    cin>>n>>m;
+    vector<vector<int>>gr(n);
+    vector<int>answ;
+    vector<int> done(n,0);
+    for(int i=0;i<m;i++){
+        int first,second;
+        cin>>first>>second;
+        gr[first-1].push_back(second-1);
+        gr[second-1].push_back(first-1);
+    }
+    dfs(0,gr,done);
+    vector<int>dop;
+    for(int i=0;i<n;i++){
+        if (done[i]==0){
+            dop.push_back(i);
+        }
+    }
+    int k=0;
+    for(int i=0;i<dop.size();i++){
+        if (gr[dop[i]].size()!=0) k++;
+    }
+    int q=0;
+    for(int i=0;i<n;i++){
+        if (gr[i].size()%2!=0){
+            q++;
+            break;
+        }
+    }
+
+    if (k==0 && q==0){
+        find_ecyc(0,gr,answ);
+        reverse(answ.begin(),answ.end());
+        for(int i=0;i<answ.size();i++)cout<<answ[i]<<" ";
+
+    }
+    else cout<<":(";
+    return 0;
+}
