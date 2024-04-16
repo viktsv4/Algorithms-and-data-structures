@@ -1,0 +1,65 @@
+#include <vector>
+#include <iostream>
+#include <algorithm>
+#include "stack"
+using namespace std;
+void paint(int v,int&color,stack<int>&st,vector<int>&col){
+    color++;
+    int last=-1;
+    while(last!=v && !st.empty()){
+        col[st.top()]=color;
+        last=st.top();
+        st.pop();
+    }
+}
+void dfs(int v, int p, int &high, vector<int> &enter, vector<int> &ret, vector<vector<int>> &gr, vector<pair<int, int>> &br,vector<int> &done, stack<int>&st,int &color,vector<int>&col) {
+    done[v]+=1;
+    high++;
+    enter[v] =high;
+    ret[v] =high;
+    st.push(v);
+    for (int i=0;i<gr[v].size();i++) {
+        int now=gr[v][i];
+        if (now==p ) continue;
+        if (done[now]==1)  ret[v] = min(ret[v], enter[now]);
+        else {
+            dfs(now, v, high, enter, ret, gr, br,done,st,color,col);
+            ret[v] = min(ret[v], ret[now]);
+            if (ret[now] > enter[v]) paint(now,color,st,col);
+        }
+    }
+}
+
+int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(0);
+    int n, m;
+    int k;
+    cin >> n >> m;
+    cin>>k;
+    vector<int> enter(n+1, 0);
+    vector<int> ret(n+1, 0);
+    vector<vector<int>> gr(n+1);
+    vector<int> done(n+1, 0);
+    vector<pair<int, int>> br;
+    int high=0;
+    for (int i = 0; i < m; i++) {
+        int first, second;
+        cin >> first >> second;
+        gr[first ].push_back(second );
+        gr[second].push_back(first );
+    }
+    stack<int>st;
+    vector<int>col(n+1,-1);
+    int color=0;
+    for (int i=0; i<n+1; i++)
+        if (done[i]==0) dfs(i, -1, high, enter, ret, gr, br,done,st,color,col);
+  for(int i=0;i<k;i++){
+        int f,s;
+        cin>>f>>s;
+        if (col[f]==col[s])cout<<"YES"<<"\n";
+       else cout<<"NO"<<"\n";
+    }
+    return 0;
+}
