@@ -1,0 +1,62 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <tuple>
+using namespace std;
+bool dfs(int k,vector<vector<int>> &gr,vector<int> &done,vector<int>&matching){
+    if (done[k])return false;
+    done[k]=1;
+    for(int i=0;i<gr[k].size();i++){
+        if ( matching[gr[k][i]]==-1 ||  dfs(matching[gr[k][i]],gr,done,matching)){
+            matching[gr[k][i]]=k;
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    int n,m,k;
+    cin>>n>>m>>k;
+    vector<vector<pair<int, int>>> gr(n, vector<pair<int, int>>(m, {1, 0}));
+    vector<vector<int>> gr_dvd(n*m);
+    vector<int>matcing(n*m,-1);
+    for(int i=0;i<k;i++) {
+        int a, b;
+        cin >> a >> b;
+        a--;
+        b--;
+        gr[a][b].first = 0;
+
+    }
+        int l=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                gr[i][j].second=l;
+                l++;
+            }
+        }
+
+for(int i=0;i<n;i++){
+    for(int j=0;j<m;j++){
+        if (i+1<n){
+        if(gr[i][j].first==1 && gr[i+1][j].first==1){
+            gr_dvd[gr[i][j].second].push_back(gr[i+1][j].second);
+            gr_dvd[gr[i+1][j].second].push_back(gr[i][j].second);
+        }}
+        if (j+1<m){
+            if(gr[i][j].first==1 && gr[i][j+1].first==1){
+                gr_dvd[gr[i][j].second].push_back(gr[i][j+1].second);
+                gr_dvd[gr[i][j+1].second].push_back(gr[i][j].second);
+            }}
+    }
+}
+int count=0;
+vector<int>done(n*m,0);
+for(int i=0;i<n*m;i++){
+        fill(done.begin(), done.end(),0);
+        if (dfs(i,gr_dvd,done,matcing) )count++;
+}
+    cout<<count;
+    return 0;
+}
