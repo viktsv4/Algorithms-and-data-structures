@@ -1,0 +1,48 @@
+#include <string>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+    cin.tie(0);
+    cout.tie(0);
+    ios_base::sync_with_stdio(0);
+    long long n;
+    string zn;
+    long long mx = 0, mxSize = 0;
+    cin >> n;
+    int  dlina =1008;
+    vector<int> vec(dlina);
+    vector<int> result(dlina);
+    for (int i = 0; i < n; i++) {
+        fill(vec.begin(), vec.end(), 0);
+        cin >> zn;
+        mx = zn.length();
+        mxSize = max(mx, mxSize);
+        int dlina_copy = dlina;
+        for (int x = zn.length()-1; x >= 0; x--) {
+            vec[dlina_copy - 1] = (zn[x] - '0');
+            dlina_copy--;
+        }
+        for (int j=vec.size()-1; j>=vec.size()-mxSize-1; j--) {
+            if ((result[j] + vec[j]) >= 10) {
+                result[j - 1] += (result[j] + vec[j]) / 10;
+                result[j] = ((result[j] + vec[j]) % 10);
+            }
+            else result[j] = (result[j] + vec[j]);
+        }
+
+    }
+    int kNul=0;
+    for(int p=0;p<result.size()-1;p++){
+        if(result[p]==0) kNul++;
+        else break;
+    }
+
+    if (kNul==result.size()) cout<<"0"<<"\n";
+    else {
+        for(int i=kNul;i<result.size();i++)cout<<result[i];
+    }
+    return 0;
+}
