@@ -1,23 +1,21 @@
 #include <iostream>
 using namespace std;
 
-long long merge(long long mas[],long long fmas,long long smas,long long end){
-    long long l1=smas-fmas+1;
-    long long l2=end-smas;
-    long long mas1[l1];
-    long long mas2[l2];
-    long long k=fmas;
+int merge(int mas[],int fmas,int smas,int end){
+    int l1=smas-fmas+1;
+    int l2=end-smas;
+    int mas1[l1];
+    int mas2[l2];
+    int k=fmas;
     for (int i=0;i<l1;i++) mas1[i]=mas[fmas+i];
     for (int i=0;i<l2;i++) mas2[i]=mas[smas+i+1];
-    int i=0,j=0,s=0;
-    long long m=0;
+    int i=0,j=0;
     while(i<l1 && j<l2){
         if (mas1[i]<=mas2[j]) {
             mas[k] = mas1[i];
             i++;
         }
         else {
-            m+=l1-i;
             mas[k] = mas2[j];
             j++;
         }
@@ -33,24 +31,25 @@ long long merge(long long mas[],long long fmas,long long smas,long long end){
         k += 1;
         j++;
     }
-    return m;
-}
-long long msort(long long mas[],long long left,long long right) {
-    long long m=0;
-    if(left<right) {
 
+}
+int msort(int mas[],int left,int right) {
+    if(left<right) {
         int mid=left+(right-left)/2;
-        m+=msort(mas,left,mid);
-        m+=msort(mas,mid+1,right);
-        m+=merge(mas,left,mid,right);
+        msort(mas,left,mid);
+        msort(mas,mid+1,right);
+        merge(mas,left,mid,right);
     }
-    return m;
 }
 int main(){
-    long long n;
+    int n;
     cin>>n;
-    long long mas[n];
-    for (long long i=0;i<n;i++) cin>>mas[i];
-    cout<<msort(mas,0,n-1);
+    int mas[n];
+    for (int i=0;i<n;i++) cin>>mas[i];
+    msort(mas,0,n-1);
+    for (int i=0; i<n; i++) {
+        cout << mas[i] << " ";
+    }
+
     return 0;
 }
