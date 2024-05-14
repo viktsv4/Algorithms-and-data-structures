@@ -1,0 +1,42 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main() {
+  int n;
+  cin>>n;
+  vector<int>mountain(n);
+  vector<int>sum(n,0);
+    vector<int>sum_obr(n+1,0);
+    vector<int>sum_copy(n+1,0);
+    int finish;
+  for(int i=0;i<n;i++){
+      int len,hight;
+      cin>>len>>hight;
+      mountain[i]=hight;
+      if(i==n-1){
+          sum_copy[n-1]+=hight;
+      }
+      if(i==0){
+          sum[i]=hight;
+          sum_obr[i]=0;
+      }
+      else {
+          sum[i]=max(0,mountain[i]-mountain[i-1])+sum[i-1];
+          sum_obr[i]=max(0,mountain[i-1]-mountain[i]);
+      }
+  }
+  for(int i=n-1;i>=0;i--){
+    sum_copy[i]+=sum_copy[i+1]+sum_obr[i+1];
+  }
+    int m;
+  cin>>m;
+  for(int i=0;i<m;i++){
+      int first,second;
+      cin>>first>>second;
+      if(first>second)cout<<sum_copy[second-1]-sum_copy[first-1]<<endl;
+      else cout<<sum[second-1]-sum[first-1]<<endl;
+  }
+    return 0;
+}
